@@ -33,10 +33,10 @@ export default function Login() {
     setForm({ email: 'demo@gmail.com', password: 'demo1234' });
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'oklch(0.985 0.004 286)' }}>
+    <div className="min-h-screen flex flex-col lg:flex-row w-full" style={{ background: 'oklch(0.985 0.004 286)' }}>
       {/* â”€â”€ Left panel â€” editorial dark â”€â”€ */}
       <div
-        className="hidden lg:flex lg:w-[52%] flex-col justify-between p-12 relative overflow-hidden"
+        className="hidden lg:flex lg:w-[52%] flex-col justify-between p-4 md:p-8 lg:p-12 relative overflow-hidden"
         style={{ background: '#0a1f14' }}
       >
         {/* Subtle background glow */}
@@ -83,8 +83,8 @@ export default function Login() {
 
 
       {/* —— Right panel —— form —— */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
-        <div className="w-full max-w-[400px]">
+      <div className="flex-1 flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-12 w-full">
+        <div className="w-full max-w-[400px] mx-auto px-2 sm:px-0">
 
           {/* Animated NUNO logo */}
           <div className="flex items-center gap-2 justify-center mb-8">

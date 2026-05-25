@@ -71,18 +71,18 @@ export default function Dashboard() {
   const currency = businessProfile?.defaultCurrency || 'USD';
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto w-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 tracking-tight">
             Hello, <span className="text-emerald-600">{currentUser?.name?.split(' ')[0]}</span> 👋
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">
             Here’s what’s happening with your billing today.
           </p>
         </div>
-        <Link to="/invoices/new" className="btn-primary shrink-0">
+        <Link to="/invoices/new" className="btn-primary shrink-0 w-full sm:w-auto text-base sm:text-sm py-3 sm:py-2.5">
           <Plus className="w-4 h-4" />
           New Invoice
         </Link>
@@ -90,25 +90,25 @@ export default function Dashboard() {
 
       {/* Overdue alert */}
       {overdueInvoices.length > 0 && (
-        <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl mb-6">
+        <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-xl mb-4 sm:mb-6">
           <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <div>
-            <p className="text-red-700 font-semibold text-sm">
+            <p className="text-red-700 font-semibold text-xs sm:text-sm">
               {overdueInvoices.length} overdue invoice{overdueInvoices.length > 1 ? 's' : ''}
             </p>
-            <p className="text-red-600 text-xs mt-0.5">
+            <p className="text-red-600 text-[11px] sm:text-xs mt-0.5">
               Total outstanding: {formatCurrency(overdueInvoices.reduce((s, i) => s + i.total, 0), currency)}
               {' '}— Follow up with your clients to get paid.
             </p>
           </div>
-          <Link to="/invoices?status=overdue" className="ml-auto text-red-700 text-xs font-semibold hover:underline shrink-0">
+          <Link to="/invoices?status=overdue" className="sm:ml-auto text-red-700 text-xs font-semibold hover:underline shrink-0 mt-2 sm:mt-0">
             View all →
           </Link>
         </div>
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <StatCard
           icon={DollarSign}
           label="Total Revenue"
@@ -139,9 +139,9 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Revenue chart */}
-        <div className="card lg:col-span-2">
+        <div className="card lg:col-span-2 min-w-0">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="font-semibold text-slate-700 text-sm">Revenue Overview</h2>
@@ -170,7 +170,7 @@ export default function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[220px] text-slate-400">
+            <div className="flex flex-col items-center justify-center h-[160px] sm:h-[220px] text-slate-400">
               <TrendingUp className="w-10 h-10 mb-3 opacity-30" />
               <p className="text-sm">No revenue data yet</p>
               <p className="text-xs mt-1">Create & mark invoices as paid to see revenue</p>
@@ -179,8 +179,8 @@ export default function Dashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="card">
-          <h2 className="font-semibold text-slate-700 text-sm mb-4">Quick Actions</h2>
+        <div className="card min-w-0">
+          <h2 className="font-semibold text-slate-700 text-xs sm:text-sm mb-3 sm:mb-4">Quick Actions</h2>
           <div className="space-y-2">
             {[
               { to: '/invoices/new', label: 'Create Invoice',    icon: FileText, color: 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' },
@@ -194,7 +194,7 @@ export default function Dashboard() {
                 className={`flex items-center gap-3 p-3 rounded-xl ${color} transition-colors`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
-                <span className="text-sm font-medium">{label}</span>
+                <span className="text-xs sm:text-sm font-medium">{label}</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-auto opacity-60" />
               </Link>
             ))}
@@ -202,7 +202,7 @@ export default function Dashboard() {
 
           {/* Invoice status breakdown */}
           <div className="mt-6 pt-5 border-t border-slate-100">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Invoice Status</p>
+            <p className="text-[11px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sm:mb-3">Invoice Status</p>
             {[
           { label: 'Draft',   count: stats.draftCount,   color: 'bg-slate-300'   },
               { label: 'Sent',    count: stats.pendingCount,  color: 'bg-amber-400'   },
@@ -210,8 +210,8 @@ export default function Dashboard() {
             ].map((s) => (
               <div key={s.label} className="flex items-center gap-2 mb-2">
                 <div className={`w-2 h-2 rounded-full shrink-0 ${s.color}`} />
-                <span className="text-xs text-slate-600 flex-1">{s.label}</span>
-                <span className="text-xs font-semibold text-slate-900">{s.count}</span>
+                <span className="text-[11px] sm:text-xs text-slate-600 flex-1">{s.label}</span>
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-900">{s.count}</span>
               </div>
             ))}
           </div>
@@ -219,16 +219,16 @@ export default function Dashboard() {
       </div>
 
       {/* Recent Invoices */}
-      <div className="card mt-6">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-semibold text-slate-700 text-sm">Recent Invoices</h2>
-          <Link to="/invoices" className="text-emerald-600 text-sm font-medium hover:text-emerald-700 flex items-center gap-1 transition-colors">
+      <div className="card mt-4 sm:mt-6 min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-5">
+          <h2 className="font-semibold text-slate-700 text-xs sm:text-sm">Recent Invoices</h2>
+          <Link to="/invoices" className="text-emerald-600 text-xs sm:text-sm font-medium hover:text-emerald-700 flex items-center gap-1 transition-colors">
             View all <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {recentInvoices.length === 0 ? (
-          <div className="text-center py-10 text-slate-400">
+          <div className="text-center py-6 sm:py-10 text-slate-400">
             <FileText className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm">No invoices yet</p>
             <Link to="/invoices/new" className="btn-primary mt-4 inline-flex">
@@ -236,8 +236,8 @@ export default function Dashboard() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full min-w-[600px]">
+          <div className="overflow-x-auto -mx-2 sm:-mx-6 px-2 sm:px-6">
+            <table className="w-full min-w-[400px] sm:min-w-[600px] text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-slate-100">
                   <th className="table-header text-left rounded-tl-lg">Invoice #</th>

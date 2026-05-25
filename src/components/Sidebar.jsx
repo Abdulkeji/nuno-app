@@ -37,11 +37,12 @@ export default function Sidebar({ open, onClose }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 flex flex-col z-30 bg-white transition-transform duration-300
-          ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex`}
+        className={`fixed top-0 left-0 h-full w-4/5 max-w-xs min-w-[200px] flex flex-col z-30 bg-white transition-transform duration-300
+          ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex lg:w-64 lg:min-w-0`}
+        style={{ maxWidth: 320 }}
       >
         {/* Animated N Logo and Name */}
-        <div className="flex items-center gap-3 px-5 py-6 border-b border-slate-200">
+        <div className="flex items-center gap-2 px-3 py-4 border-b border-slate-200">
           <span className="text-4xl font-black text-emerald-600 animate-nuno-logo select-none" style={{fontFamily: 'monospace', letterSpacing: '-0.1em'}}>
             N
           </span>
@@ -52,7 +53,7 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto scrollbar-hide">
+        <nav className="flex-1 px-1.5 py-3 space-y-0.5 overflow-y-auto scrollbar-hide">
           {NAV.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
