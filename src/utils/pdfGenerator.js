@@ -1,0 +1,289 @@
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { formatCurrency, formatDate, CURRENCIES } from './helpers';
+
+const PRIMARY = [5, 150, 105];   // #059669 emerald
+const NAVY   = [9, 9, 11];       // #09090b near-black
+const GRAY   = [113, 113, 122];  // #71717a
+const WHITE  = [255, 255, 255];
+const LIGHT  = [236, 253, 245];  // emerald-50 tinted
+const GREEN  = [5, 150, 105];    // #059669
+
+const getCurrencySymbol = (code) =>
+  CURRENCIES.find((c) => c.code === code)?.symbol || '$';
+
+const drawHeader = (doc, title, invoice, business, pageWidth) => {
+  // Blue header band
+  doc.setFillColor(...PRIMARY);
+  doc.rect(0, 0, pageWidth, 50, 'F');
+
+  // Business name (left)
+  doc.setTextColor(...WHITE);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text(business?.businessName || 'Your Business', 15, 20);
+
+  // Business sub-info
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  const bizLines = [];
+  if (business?.address) bizLines.push(business.address);
+  if (business?.phone) bizLines.push(business.phone);
+  if (business?.email) bizLines.push(business.email);
+  if (business?.website) bizLines.push(business.website);
+  bizLines.forEach((line, i) => doc.text(line, 15, 28 + i * 5));
+
+  // Title badge (right)
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.text(title, pageWidth - 15, 18, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text(`#${invoice.invoiceNumber}`, pageWidth - 15, 27, { align: 'right' });
+
+  // Dates block (right)
+  doc.setFontSize(8.5);
+  doc.text(`Issue Date: ${formatDate(invoice.issueDate)}`, pageWidth - 15, 35, { align: 'right' });
+  doc.text(`Due Date:   ${formatDate(invoice.dueDate)}`, pageWidth - 15, 41, { align: 'right' });
+};
+
+const drawBillTo = (doc, invoice, startY) => {
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // Section background
+  doc.setFillColor(...LIGHT);
+  doc.rect(0, startY, pageWidth, 38, 'F');
+
+  doc.setTextColor(...GRAY);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.text('BILL TO', 15, startY + 8);
+
+  doc.setTextColor(...NAVY);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text(invoice.clientName || 'Client Name', 15, startY + 17);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  const lines = [];
+  if (invoice.clientAddress) lines.push(invoice.clientAddress);
+  if (invoice.clientEmail)   lines.push(invoice.clientEmail);
+  if (invoice.clientPhone)   lines.push(invoice.clientPhone);
+  lines.forEach((line, i) => doc.text(line, 15, startY + 24 + i * 5));
+
+  return startY + 38;
+};
+
+const drawTotals = (doc, invoice, tableEndY) => {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const rightCol = pageWidth - 15;
+  const labelCol = pageWidth - 70;
+  let y = tableEndY + 6;
+
+  const sym = getCurrencySymbol(invoice.currency);
+
+  const row = (label, value, bold = false) => {
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.setFontSize(bold ? 10 : 9);
+    doc.setTextColor(...(bold ? NAVY : GRAY));
+    doc.text(label, labelCol, y, { align: 'right' });
+    doc.text(`${sym}${parseFloat(value || 0).toFixed(2)}`, rightCol, y, { align: 'right' });
+    y += bold ? 8 : 6;
+  };
+
+  row('Subtotal', invoice.subtotal);
+  row(`Tax (${invoice.taxRate || 0}%)`, invoice.taxAmount);
+
+  // Divider
+  doc.setDrawColor(226, 232, 240);
+  doc.line(labelCol - 20, y - 1, rightCol, y - 1);
+  y += 3;
+
+  row('TOTAL', invoice.total, true);
+  return y;
+};
+
+const drawFooter = (doc, invoice, y) => {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  let cur = y + 10;
+
+  if (invoice.paymentMethod) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...GRAY);
+    doc.text('PAYMENT METHOD', 15, cur);
+    cur += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...NAVY);
+    doc.text(invoice.paymentMethod, 15, cur);
+    cur += 8;
+  }
+
+  if (invoice.notes) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...GRAY);
+    doc.text('NOTES', 15, cur);
+    cur += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...NAVY);
+    const lines = doc.splitTextToSize(invoice.notes, pageWidth - 30);
+    doc.text(lines, 15, cur);
+    cur += lines.length * 5 + 3;
+  }
+
+  if (invoice.terms) {
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...GRAY);
+    doc.text('TERMS & CONDITIONS', 15, cur);
+    cur += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...NAVY);
+    const lines = doc.splitTextToSize(invoice.terms, pageWidth - 30);
+    doc.text(lines, 15, cur);
+    cur += lines.length * 5 + 3;
+  }
+
+  // Footer branding
+  const pageHeight = doc.internal.pageSize.getHeight();
+  doc.setDrawColor(226, 232, 240);
+  doc.line(15, pageHeight - 18, pageWidth - 15, pageHeight - 18);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(...GRAY);
+  doc.text('Generated by InvoicePro', pageWidth / 2, pageHeight - 11, { align: 'center' });
+};
+
+// ─── Public API ───────────────────────────────────────────────────────────────
+
+export const generateInvoicePDF = (invoice, business, download = true) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const sym = getCurrencySymbol(invoice.currency);
+
+  drawHeader(doc, 'INVOICE', invoice, business, pageWidth);
+  let y = drawBillTo(doc, invoice, 54);
+
+  // Items table
+  autoTable(doc, {
+    startY: y + 4,
+    head: [['Description', 'Qty', 'Unit Price', 'Amount']],
+    body: invoice.items.map((item) => [
+      item.description,
+      item.quantity,
+      `${sym}${parseFloat(item.unitPrice || 0).toFixed(2)}`,
+      `${sym}${parseFloat(item.total || 0).toFixed(2)}`,
+    ]),
+    styles: {
+      font: 'helvetica',
+      fontSize: 9,
+      textColor: NAVY,
+      cellPadding: 5,
+    },
+    headStyles: {
+      fillColor: PRIMARY,
+      textColor: WHITE,
+      fontStyle: 'bold',
+      fontSize: 8,
+    },
+    alternateRowStyles: { fillColor: LIGHT },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 18, halign: 'center' },
+      2: { cellWidth: 32, halign: 'right' },
+      3: { cellWidth: 32, halign: 'right' },
+    },
+    margin: { left: 15, right: 15 },
+  });
+
+  const tableEnd = doc.lastAutoTable.finalY;
+  const totalY = drawTotals(doc, invoice, tableEnd);
+  drawFooter(doc, invoice, totalY);
+
+  const filename = `${invoice.invoiceNumber}.pdf`;
+  if (download) {
+    doc.save(filename);
+  } else {
+    return doc.output('bloburl');
+  }
+};
+
+export const generateReceiptPDF = (invoice, business, download = true) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const sym = getCurrencySymbol(invoice.currency);
+
+  // Override header with green accent
+  doc.setFillColor(...GREEN);
+  doc.rect(0, 0, pageWidth, 50, 'F');
+
+  doc.setTextColor(...WHITE);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text(business?.businessName || 'Your Business', 15, 20);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  const bizLines = [];
+  if (business?.address) bizLines.push(business.address);
+  if (business?.phone) bizLines.push(business.phone);
+  if (business?.email) bizLines.push(business.email);
+  bizLines.forEach((line, i) => doc.text(line, 15, 28 + i * 5));
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.text('RECEIPT', pageWidth - 15, 18, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text(`#REC-${invoice.invoiceNumber.replace('INV-', '')}`, pageWidth - 15, 27, { align: 'right' });
+
+  doc.setFontSize(8.5);
+  doc.text(`Invoice: ${invoice.invoiceNumber}`, pageWidth - 15, 35, { align: 'right' });
+  doc.text(`Paid On: ${formatDate(invoice.paidDate || invoice.updatedAt)}`, pageWidth - 15, 41, { align: 'right' });
+
+  let y = drawBillTo(doc, invoice, 54);
+
+  // Payment confirmed banner
+  doc.setFillColor(209, 250, 229);
+  doc.rect(15, y + 2, pageWidth - 30, 12, 'F');
+  doc.setTextColor(...GREEN);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.text('✓  PAYMENT CONFIRMED', pageWidth / 2, y + 10, { align: 'center' });
+
+  autoTable(doc, {
+    startY: y + 18,
+    head: [['Description', 'Qty', 'Unit Price', 'Amount']],
+    body: invoice.items.map((item) => [
+      item.description,
+      item.quantity,
+      `${sym}${parseFloat(item.unitPrice || 0).toFixed(2)}`,
+      `${sym}${parseFloat(item.total || 0).toFixed(2)}`,
+    ]),
+    styles: { font: 'helvetica', fontSize: 9, textColor: NAVY, cellPadding: 5 },
+    headStyles: { fillColor: GREEN, textColor: WHITE, fontStyle: 'bold', fontSize: 8 },
+    alternateRowStyles: { fillColor: LIGHT },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 18, halign: 'center' },
+      2: { cellWidth: 32, halign: 'right' },
+      3: { cellWidth: 32, halign: 'right' },
+    },
+    margin: { left: 15, right: 15 },
+  });
+
+  const tableEnd = doc.lastAutoTable.finalY;
+  const totalY = drawTotals(doc, invoice, tableEnd);
+  drawFooter(doc, invoice, totalY);
+
+  const filename = `REC-${invoice.invoiceNumber.replace('INV-', '')}.pdf`;
+  if (download) {
+    doc.save(filename);
+  } else {
+    return doc.output('bloburl');
+  }
+};
