@@ -38,12 +38,9 @@ export default function Sidebar({ open, onClose }) {
       <aside
         className={`
           fixed top-0 left-0 h-full w-64 flex flex-col z-30
-          transform transition-transform duration-300 ease-in-out
-          ${open ? 'translate-x-0' : '-translate-x-full'}
-          lg:relative lg:translate-x-0 lg:z-auto
-        `}
-        style={{ background: '#ffffff', borderRight: '1px solid #e2e8f0' }}
-      >
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 relative">
+              {/* Placeholder for logo */}
+            </div>
         {/* Logo */}
         <div className="flex items-center justify-between px-5 py-5" style={{ borderBottom: '1px solid #e2e8f0' }}>
           <div className="flex items-center gap-3">

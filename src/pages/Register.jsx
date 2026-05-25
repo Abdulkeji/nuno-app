@@ -52,14 +52,7 @@ export default function Register() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none"
           style={{ background: 'radial-gradient(circle, #059669, transparent 70%)', transform: 'translate(30%, -30%)' }} />
 
-        <div className="flex items-center gap-3 relative z-10">
-          <img
-            src={nunoLogo}
-            alt="NUNO Logo"
-            className="w-14 h-14 rounded-xl bg-transparent"
-            style={{ objectFit: 'contain' }}
-          />
-        </div>
+        {/* Logo removed due to missing asset */}
 
         <div className="relative z-10">
           <h1 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
@@ -88,15 +81,7 @@ export default function Register() {
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-[400px]">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-10 lg:hidden">
-            <img
-              src={nunoLogo}
-              alt="NUNO Logo"
-              className="w-10 h-10 rounded-xl bg-transparent"
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
+          {/* Mobile logo removed due to missing asset */}
 
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Create your account</h2>
           <p className="text-slate-400 text-sm mt-2 mb-8">

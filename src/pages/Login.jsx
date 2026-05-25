@@ -50,15 +50,7 @@ export default function Login() {
           style={{ background: 'radial-gradient(circle, #047857, transparent 70%)', transform: 'translate(-40%, 40%)' }}
         />
 
-        {/* Logo image */}
-        <div className="flex items-center gap-3 relative z-10">
-          <img
-            src={nunoLogo}
-            alt="NUNO Logo"
-            className="w-14 h-14 rounded-xl bg-transparent"
-            style={{ objectFit: 'contain' }}
-          />
-        </div>
+        {/* Logo image removed due to missing asset */}
 
         {/* Hero text */}
         <div className="relative z-10">
@@ -94,15 +86,7 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-[400px]">
 
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-10 lg:hidden">
-            <img
-              src={nunoLogo}
-              alt="NUNO Logo"
-              className="w-10 h-10 rounded-xl bg-transparent"
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
+          {/* Mobile logo removed due to missing asset */}
 
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome back</h2>
           <p className="text-slate-400 text-sm mt-2 mb-8">

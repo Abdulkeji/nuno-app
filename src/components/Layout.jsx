@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { Menu } from 'lucide-react';
-import nunoLogo from '../assets/nuno_logo.png';
+
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -24,14 +24,7 @@ export default function Layout() {
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 relative">
-              <img
-                src={nunoLogo}
-                alt="NUNO Logo"
-                className="w-10 h-10 z-10 relative"
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
+            {/* Logo removed due to missing asset */}
             <span className="font-black text-slate-900 text-lg tracking-tight">NUNO</span>
           </div>
         </header>
