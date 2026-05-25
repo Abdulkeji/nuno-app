@@ -1,5 +1,4 @@
-﻿import nunoLogo from '../assets/nuno-logo.png';
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, AlertCircle, Sparkles } from 'lucide-react';
