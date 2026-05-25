@@ -81,11 +81,18 @@ export default function Login() {
         <p className="text-zinc-600 text-sm relative z-10">Â© {new Date().getFullYear()} NUNO. All rights reserved.</p>
       </div>
 
-      {/* â”€â”€ Right panel â€” form â”€â”€ */}
+
+      {/* —— Right panel —— form —— */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-[400px]">
 
-          {/* Mobile logo removed due to missing asset */}
+          {/* Animated NUNO logo */}
+          <div className="flex items-center gap-2 justify-center mb-8">
+            <span className="text-4xl font-black text-emerald-600 animate-nuno-logo select-none" style={{fontFamily: 'monospace', letterSpacing: '-0.1em'}}>
+              N
+            </span>
+            <span className="text-2xl font-black text-emerald-600 tracking-tight ml-1">NUNO</span>
+          </div>
 
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Welcome back</h2>
           <p className="text-slate-400 text-sm mt-2 mb-8">
