@@ -5,7 +5,7 @@ import {
   LogOut, X, Zap,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import nunoLogo from '../assets/nuno-logo.png';
+
 
 const NAV = [
   { to: '/',          icon: LayoutDashboard, label: 'Dashboard'  },
@@ -46,12 +46,7 @@ export default function Sidebar({ open, onClose }) {
           <div className="flex items-center gap-3">
             {/* Logo image with strong emerald blend, no light green, larger size */}
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 relative">
-              <img
-                src={nunoLogo}
-                alt="NUNO Logo"
-                className="w-14 h-14 z-10 relative"
-                style={{ objectFit: 'contain' }}
-              />
+              {/* Logo removed due to missing asset */}
             </div>
             <div className="flex flex-col leading-none">
               <span className="text-slate-900 font-black text-xl tracking-tight">NUNO</span>
