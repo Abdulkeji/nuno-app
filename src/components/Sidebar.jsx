@@ -36,30 +36,28 @@ export default function Sidebar({ open, onClose }) {
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed top-0 left-0 h-full w-64 flex flex-col z-30
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 relative">
-              {/* Placeholder for logo */}
+        className={`fixed top-0 left-0 h-full w-64 flex flex-col z-30 bg-white transition-transform duration-300
+          ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:flex`}
+      >
+        {false && (
+          <div className="flex items-center justify-between px-5 py-5" style={{ borderBottom: '1px solid #e2e8f0' }}>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 relative">
+                {/* Logo removed due to missing asset */}
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-slate-900 font-black text-xl tracking-tight">NUNO</span>
+                <span className="text-slate-400 text-[10px] font-medium tracking-widest uppercase mt-0.5">Invoice</span>
+              </div>
             </div>
-        {/* Logo */}
-        <div className="flex items-center justify-between px-5 py-5" style={{ borderBottom: '1px solid #e2e8f0' }}>
-          <div className="flex items-center gap-3">
-            {/* Logo image with strong emerald blend, no light green, larger size */}
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 relative">
-              {/* Logo removed due to missing asset */}
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-slate-900 font-black text-xl tracking-tight">NUNO</span>
-              <span className="text-slate-400 text-[10px] font-medium tracking-widest uppercase mt-0.5">Invoice</span>
-            </div>
+            <button
+              onClick={onClose}
+              className="lg:hidden text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="lg:hidden text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        )}
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto scrollbar-hide">
