@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { Menu } from 'lucide-react';
-import nunoLogo from '../assets/nuno-logo.png';
+import nunoLogo from '../assets/nuno_logo.png';
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
