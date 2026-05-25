@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
     getUsers();
     seedDemoData();
 
+    // Restore session if it exists
     const stored = localStorage.getItem('invoicepro_session');
     if (stored) {
       try {
